@@ -138,10 +138,10 @@ export default function ProductList() {
         }
 
         try {
-            // Mark current receipt as completed
+            // Mark current receipt as waiting for signature
             const { error: updateError } = await supabase
                 .from('receipts')
-                .update({ is_completed: true })
+                .update({ status: 'waiting_signature' })
                 .eq('id', receiptId)
 
             if (updateError) throw updateError

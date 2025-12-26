@@ -4,9 +4,11 @@ export type Product = {
     price: number;
 }
 
+type Status = 'created' | 'waiting_signature' | 'completed';
+
 export type Receipt = {
     id: number;
-    is_completed: boolean;
+    status: Status;
     tax_percentage: number;
     sii_code?: string;
     pdf_link?: string;
