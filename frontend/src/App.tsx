@@ -1,6 +1,8 @@
 import { Routes, Route, Link } from 'react-router-dom'
+import { SignedIn, SignedOut } from '@clerk/react-router'
 import { RequireAuth } from './components/auth/requireAuth'
 import SignInPage from './components/auth/SignInPage'
+import SignOutPage from './components/auth/SignOutPage'
 
 import './App.css'
 import Home from './components/home'
@@ -33,6 +35,24 @@ export default function App() {
                 Receipts
               </Link>
             </div>
+            <div className="flex items-center">
+              <SignedOut>
+                <Link 
+                  to="/sign-in/*" 
+                  className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Sign In
+                </Link>
+              </SignedOut>
+              <SignedIn>
+                <Link 
+                  to="/sign-out" 
+                  className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Sign Out
+                </Link>
+              </SignedIn>
+            </div>
           </div>
         </div>
       </nav>
@@ -40,6 +60,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sign-in/*" element={<SignInPage />} />
+          <Route path="/sign-out" element={<SignOutPage />} />
           <Route 
             path="/products" 
             element={<RequireAuth><ProductList /></RequireAuth>} 
