@@ -17,21 +17,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-@app.post("/webhooks/sii")
-async def sii_webhook(payload: dict):
-    # Esperado:
-    # { "documentId": 1234, "status": "issued", "siiCode": "...", "pdfUrl": "..." }
-    document_id = payload.get("documentId")
-    status = payload.get("status")
-
-    # if not document_id or not status:
-    #     raise HTTPException(status_code=400, detail="Missing documentId/status")
-
-    # TODO: actualizar tu DB con siiCode/pdfUrl/status
-    return {"ok": True}
-
 app.include_router(health_router)
 app.include_router(user_router)
 app.include_router(sii_validation_router)
