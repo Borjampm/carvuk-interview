@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import type { Receipt } from '../types'
+import ReceiptDetail from './receiptDetail'
 
 export default function ReceiptsList() {
     const [receipts, setReceipts] = useState<Receipt[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [selectedReceiptId, setSelectedReceiptId] = useState<number | null>(null)
 
     useEffect(() => {
         async function fetchCompletedReceipts() {
@@ -40,9 +42,14 @@ export default function ReceiptsList() {
         return <div className="flex justify-center p-8 text-red-500">Error: {error}</div>
     }
 
-    function handleViewDetails(receiptId: number) {
-        // TODO: Implement detail view
-        console.log('View details for receipt:', receiptId)
+    // Show detail view if a receipt is selected
+    if (selectedReceiptId !== null) {
+        return (
+            <ReceiptDetail
+                receiptId={selectedReceiptId}
+                onClose={() => setSelectedReceiptId(null)}
+            />
+        )
     }
 
     return (
@@ -67,7 +74,7 @@ export default function ReceiptsList() {
                                     <td className="p-4">#{receipt.id}</td>
                                     <td className="p-4">
                                         <button
-                                            onClick={() => handleViewDetails(receipt.id)}
+                                            onClick={() => setSelectedReceiptId(receipt.id)}
                                             className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                                         >
                                             View Details
