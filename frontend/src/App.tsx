@@ -1,6 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom'
 
 import './App.css'
+import Home from './components/home'
 import ProductList from './components/productList'
 import ReceiptsList from './components/receiptsList'
 
@@ -35,6 +36,7 @@ export default function App() {
       </nav>
       <div className="pt-16">
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/receipts" element={<ReceiptsList />} />
         </Routes>
