@@ -1,11 +1,14 @@
 import httpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from supabase import create_client
 
 from app.core.config import settings
 
 
 router = APIRouter(prefix="/sii-validation", tags=["sii-validation"])
+
+supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
 
 
 class SiiValidationRequest(BaseModel):
@@ -22,6 +25,7 @@ class SiiCallbackPayload(BaseModel):
 @router.post("/request-signature")
 async def validate_document(request: SiiValidationRequest):
     callback_url = f"{settings.CALLBACK_URL}/sii-validation/callback"
+    print(callback_url)
     
     async with httpx.AsyncClient() as client:
         response = await client.post(
@@ -46,6 +50,16 @@ async def validate_document(request: SiiValidationRequest):
 async def sii_callback(payload: SiiCallbackPayload):
     print(f"Received SII callback: documentId={payload.documentId}, status={payload.status}")
     
-    # TODO: actualizar tu DB con siiCode/pdfUrl/status
+    # Update the receipt in Supabase
+    result = supabase.table("receipts").update({
+        "sii_code": payload.siiCode,
+        "pdf_url": payload.pdfUrl,
+        "status": "completed",
+    }).eq("id", payload.documentId).execute()
+    
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Receipt not found")
+    
+    print(f"Updated receipt {payload.documentId}: sii_code={payload.siiCode}, pdf_url={payload.pdfUrl}, status=completed")
     
     return {"ok": True}
