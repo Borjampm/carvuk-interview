@@ -271,7 +271,7 @@ export default function ProductList() {
                             onClick={createReceipt}
                             className="w-full px-4 py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition-colors"
                         >
-                            Crear Boleta
+                            Create Receipt
                         </button>
                     </div>
                 )}

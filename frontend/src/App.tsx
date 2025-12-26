@@ -2,6 +2,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 
 import './App.css'
 import ProductList from './components/productList'
+import ReceiptsList from './components/receiptsList'
 
 export default function App() {
   return (
@@ -22,6 +23,12 @@ export default function App() {
               >
                 Products
               </Link>
+              <Link 
+                to="/receipts" 
+                className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Receipts
+              </Link>
             </div>
           </div>
         </div>
@@ -29,6 +36,7 @@ export default function App() {
       <div className="pt-16">
         <Routes>
           <Route path="/products" element={<ProductList />} />
+          <Route path="/receipts" element={<ReceiptsList />} />
         </Routes>
       </div>
     </>
