@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import type { Product, ProductsInReceipt } from '../types'
+import ReceiptDetail from './receiptDetail'
 
 export default function ProductList() {
     const [products, setProducts] = useState<Product[]>([])
@@ -8,6 +9,7 @@ export default function ProductList() {
     const [receiptId, setReceiptId] = useState<number | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [completedReceiptId, setCompletedReceiptId] = useState<number | null>(null)
 
     useEffect(() => {
         async function initialize() {
@@ -141,7 +143,8 @@ export default function ProductList() {
 
             if (updateError) throw updateError
 
-            alert(`Receipt #${receiptId} created successfully!`)
+            // Show the completed receipt
+            setCompletedReceiptId(receiptId)
 
             // Create a new receipt for next order
             const { data: newReceiptData, error: receiptError } = await supabase
@@ -167,6 +170,16 @@ export default function ProductList() {
 
     if (error) {
         return <div className="flex justify-center p-8 text-red-500">Error: {error}</div>
+    }
+
+    // Show receipt detail if a receipt was just completed
+    if (completedReceiptId !== null) {
+        return (
+            <ReceiptDetail
+                receiptId={completedReceiptId}
+                onClose={() => setCompletedReceiptId(null)}
+            />
+        )
     }
 
     return (
