@@ -161,7 +161,7 @@ export default function ProductList() {
                                     <tr key={product.id} className="border-b hover:bg-gray-100 dark:hover:bg-gray-800">
                                         <td className="p-4">{product.id}</td>
                                         <td className="p-4">{product.name}</td>
-                                        <td className="p-4">${product.price.toFixed(2)}</td>
+                                        <td className="p-4">${product.price.toFixed(0)}</td>
                                         <td className="p-4">
                                             <button
                                                 onClick={() => addToCart(product.id)}
@@ -206,8 +206,8 @@ export default function ProductList() {
                                         <tr key={item.product_id} className="border-b hover:bg-gray-100 dark:hover:bg-gray-800">
                                             <td className="p-4">{product.name}</td>
                                             <td className="p-4">{item.quantity}</td>
-                                            <td className="p-4">${product.price.toFixed(2)}</td>
-                                            <td className="p-4">${(product.price * item.quantity).toFixed(2)}</td>
+                                            <td className="p-4">${product.price.toFixed(0)}</td>
+                                            <td className="p-4">${(product.price * item.quantity).toFixed(0)}</td>
                                             <td className="p-4">
                                                 <button
                                                     onClick={() => removeFromCart(item.product_id)}
@@ -223,7 +223,7 @@ export default function ProductList() {
                             <tfoot>
                                 <tr className="border-t-2 font-semibold">
                                     <td colSpan={3} className="p-4 text-right">Total:</td>
-                                    <td className="p-4">${calculateTotal().toFixed(2)}</td>
+                                    <td className="p-4">${calculateTotal().toFixed(0)}</td>
                                     <td className="p-4"></td>
                                 </tr>
                             </tfoot>
