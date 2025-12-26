@@ -53,13 +53,13 @@ async def sii_callback(payload: SiiCallbackPayload):
     # Update the receipt in Supabase
     result = supabase.table("receipts").update({
         "sii_code": payload.siiCode,
-        "pdf_url": payload.pdfUrl,
+        "pdf_link": payload.pdfUrl,
         "status": "completed",
     }).eq("id", payload.documentId).execute()
     
     if not result.data:
         raise HTTPException(status_code=404, detail="Receipt not found")
     
-    print(f"Updated receipt {payload.documentId}: sii_code={payload.siiCode}, pdf_url={payload.pdfUrl}, status=completed")
+    print(f"Updated receipt {payload.documentId}: sii_code={payload.siiCode}, pdf_link={payload.pdfUrl}, status=completed")
     
     return {"ok": True}
