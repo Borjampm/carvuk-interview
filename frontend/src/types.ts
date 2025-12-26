@@ -4,12 +4,13 @@ export type Product = {
     price: number;
 }
 
-type Receipt = {
+export type Receipt = {
     id: number;
+    is_completed?: boolean;
 }
 
-type ProductsInReceipt = {
-    productId: number;
-    receiptId: number;
+export type ProductsInReceipt = {
+    product_id: number;
+    receipt_id: number;
     quantity: number;
 }
