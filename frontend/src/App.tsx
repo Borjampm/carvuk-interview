@@ -2,7 +2,6 @@ import { Routes, Route, Link } from 'react-router-dom'
 
 import './App.css'
 import ProductList from './components/productList'
-import Boletas from './components/boletas'
 
 export default function App() {
   return (
@@ -30,7 +29,6 @@ export default function App() {
       <div className="pt-16">
         <Routes>
           <Route path="/products" element={<ProductList />} />
-          <Route path="/boletas" element={<Boletas />} />
         </Routes>
       </div>
     </>
