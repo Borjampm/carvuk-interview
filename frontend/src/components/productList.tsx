@@ -126,6 +126,41 @@ export default function ProductList() {
         }, 0)
     }
 
+    async function createReceipt() {
+        if (!receiptId || productsInReceipt.length === 0) {
+            alert('Cart is empty. Add products before creating a receipt.')
+            return
+        }
+
+        try {
+            // Mark current receipt as completed
+            const { error: updateError } = await supabase
+                .from('receipts')
+                .update({ is_completed: true })
+                .eq('id', receiptId)
+
+            if (updateError) throw updateError
+
+            alert(`Receipt #${receiptId} created successfully!`)
+
+            // Create a new receipt for next order
+            const { data: newReceiptData, error: receiptError } = await supabase
+                .from('receipts')
+                .insert({})
+                .select()
+                .single()
+
+            if (receiptError) throw receiptError
+            
+            setReceiptId(newReceiptData.id)
+            setProductsInReceipt([])
+            await fetchCartItems(newReceiptData.id)
+        } catch (err) {
+            console.error('Error creating receipt:', err)
+            alert('Failed to create receipt')
+        }
+    }
+
     if (loading) {
         return <div className="flex justify-center p-8">Loading products...</div>
     }
@@ -230,6 +265,16 @@ export default function ProductList() {
                         </table>
                     )}
                 </div>
+                {productsInReceipt.length > 0 && (
+                    <div className="mt-auto">
+                        <button
+                            onClick={createReceipt}
+                            className="w-full px-4 py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition-colors"
+                        >
+                            Crear Boleta
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     )

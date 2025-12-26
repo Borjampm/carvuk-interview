@@ -6,7 +6,7 @@ export type Product = {
 
 export type Receipt = {
     id: number;
-    is_completed?: boolean;
+    is_completed: boolean;
 }
 
 export type ProductsInReceipt = {
