@@ -24,19 +24,6 @@ export default function ProductList() {
 
                 if (productsError) throw productsError
                 setProducts(productsData || [])
-
-                // Create or get a draft receipt
-                const { data: receiptData, error: receiptError } = await supabase
-                    .from('receipts')
-                    .insert({})
-                    .select()
-                    .single()
-
-                if (receiptError) throw receiptError
-                setReceiptId(receiptData.id)
-
-                // Fetch products in receipt
-                await fetchCartItems(receiptData.id)
             } catch (err) {
                 console.error('Error initializing:', err)
                 setError(err instanceof Error ? err.message : 'Failed to initialize')
@@ -63,9 +50,24 @@ export default function ProductList() {
     }
 
     async function addToCart(productId: number) {
-        if (!receiptId) return
-
         try {
+            let currentReceiptId: number = receiptId ?? 0
+
+            // Create a receipt if one doesn't exist
+            if (!receiptId) {
+                const { data: receiptData, error: receiptError } = await supabase
+                    .from('receipts')
+                    .insert({})
+                    .select()
+                    .single()
+
+                if (receiptError) throw receiptError
+                currentReceiptId = receiptData.id
+                setReceiptId(currentReceiptId)
+            } else {
+                currentReceiptId = receiptId
+            }
+
             // Check if product already in cart
             const existing = productsInReceipt.find(p => p.product_id === productId)
             
@@ -75,7 +77,7 @@ export default function ProductList() {
                     .from('products_in_receipt')
                     .update({ quantity: existing.quantity + 1 })
                     .eq('product_id', productId)
-                    .eq('receipt_id', receiptId)
+                    .eq('receipt_id', currentReceiptId)
 
                 if (error) throw error
             } else {
@@ -84,14 +86,14 @@ export default function ProductList() {
                     .from('products_in_receipt')
                     .insert({
                         product_id: productId,
-                        receipt_id: receiptId,
+                        receipt_id: currentReceiptId,
                         quantity: 1
                     })
 
                 if (error) throw error
             }
 
-            await fetchCartItems(receiptId)
+            await fetchCartItems(currentReceiptId)
         } catch (err) {
             console.error('Error adding to cart:', err)
             alert('Failed to add product to cart')
@@ -110,7 +112,8 @@ export default function ProductList() {
 
             if (error) throw error
 
-            await fetchCartItems(receiptId)
+            // receiptId is guaranteed to be non-null here due to the check above
+            await fetchCartItems(receiptId as number)
         } catch (err) {
             console.error('Error removing from cart:', err)
             alert('Failed to remove product from cart')
@@ -146,18 +149,9 @@ export default function ProductList() {
             // Show the completed receipt
             setCompletedReceiptId(receiptId)
 
-            // Create a new receipt for next order
-            const { data: newReceiptData, error: receiptError } = await supabase
-                .from('receipts')
-                .insert({})
-                .select()
-                .single()
-
-            if (receiptError) throw receiptError
-            
-            setReceiptId(newReceiptData.id)
+            // Reset state - new receipt will be created when first product is added
+            setReceiptId(null)
             setProductsInReceipt([])
-            await fetchCartItems(newReceiptData.id)
         } catch (err) {
             console.error('Error creating receipt:', err)
             alert('Failed to create receipt')
@@ -228,7 +222,7 @@ export default function ProductList() {
 
             {/* Cart Section */}
             <div className="flex-1 flex flex-col gap-4">
-                <h2 className="m-0">Cart (Receipt #{receiptId})</h2>
+                <h2 className="m-0">Cart{receiptId ? ` (Receipt #${receiptId})` : ''}</h2>
                 <div className="flex-1 overflow-auto">
                     {productsInReceipt.length === 0 ? (
                         <div className="p-4 text-center text-gray-500">
