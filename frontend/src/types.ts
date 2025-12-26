@@ -8,6 +8,8 @@ export type Receipt = {
     id: number;
     is_completed: boolean;
     tax_percentage: number;
+    sii_code?: string;
+    pdf_link?: string;
 }
 
 export type ProductsInReceipt = {
