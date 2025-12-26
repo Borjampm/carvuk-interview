@@ -25,3 +25,18 @@ export async function createUser(email: string): Promise<User> {
     
     return response.json();
 }
+
+export async function requestSignature(documentId: number): Promise<void> {
+    const response = await fetch(`${API_BASE}/sii-validation/request-signature`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ document_id: documentId }),
+    })
+
+    if (!response.ok) {
+        const detail = await response.text();
+        throw new Error(`HTTP ${response.status}: ${detail}`);
+    }
+}

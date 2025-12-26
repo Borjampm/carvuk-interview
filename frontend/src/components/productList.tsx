@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import type { Product, ProductsInReceipt } from '../types'
 import ReceiptDetail from './receiptDetail'
+import { requestSignature } from '../api'
 
 export default function ProductList() {
     const [products, setProducts] = useState<Product[]>([])
@@ -145,6 +146,9 @@ export default function ProductList() {
                 .eq('id', receiptId)
 
             if (updateError) throw updateError
+
+            // Request signature from the backend
+            await requestSignature(receiptId)
 
             // Show the completed receipt
             setCompletedReceiptId(receiptId)
