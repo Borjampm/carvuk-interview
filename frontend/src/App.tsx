@@ -1,4 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom'
+import { RequireAuth } from './components/auth/requireAuth'
+import SignInPage from './components/auth/SignInPage'
 
 import './App.css'
 import Home from './components/home'
@@ -37,8 +39,15 @@ export default function App() {
       <div className="pt-16">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/products" element={<ProductList />} />
-          <Route path="/receipts" element={<ReceiptsList />} />
+          <Route path="/sign-in/*" element={<SignInPage />} />
+          <Route 
+            path="/products" 
+            element={<RequireAuth><ProductList /></RequireAuth>} 
+          />
+          <Route 
+            path="/receipts" 
+            element={<RequireAuth><ReceiptsList /></RequireAuth>} 
+          />
         </Routes>
       </div>
     </>
